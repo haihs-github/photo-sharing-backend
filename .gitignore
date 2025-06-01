@@ -1,0 +1,26 @@
+# Node modules (các thư viện cài qua npm)
+node_modules/
+
+# Thư mục build (nếu có sử dụng build tool)
+dist/
+build/
+
+# Thông tin cấu hình môi trường (chứa biến bí mật)
+.env
+.env.local
+.env.*.local
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# VSCode settings (nếu bạn dùng VSCode)
+.vscode/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
