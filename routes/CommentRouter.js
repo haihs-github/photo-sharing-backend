@@ -2,11 +2,12 @@ const express = require("express");
 const Photo = require("../db/photoModel");
 const User = require("../db/userModel");
 const router = express.Router();
+const authMiddleware = require("../middleware/authMiddleware");
 
 // get comemnt by userid
-// public
+// private
 // GET http://localhost:8081/api/comments/:id
-router.get("/:id", async (request, response) => {
+router.get("/:id", authMiddleware, async (request, response) => {
 	const userId = request.params.id;
 
 	try {

@@ -2,19 +2,12 @@ const express = require("express");
 const Photo = require("../db/photoModel");
 const User = require("../db/userModel");
 const router = express.Router();
-
-router.post("/", async (request, response) => {
-
-});
-
-router.get("/", async (request, response) => {
-
-});
+const authMiddleware = require("../middleware/authMiddleware");
 
 // get photos by id
-// public
+// private
 // GET http://localhost:8081/api/photo/photosOfUser/:id
-router.get("/photosOfUser/:id", async (request, response) => {
+router.get("/photosOfUser/:id", authMiddleware, async (request, response) => {
 	const userId = request.params.id;
 	try {
 		const user = await User.findById(userId);
