@@ -18,7 +18,7 @@ router.get("/photosOfUser/:id", async (request, response) => {
 	const userId = request.params.id;
 	try {
 		const user = await User.findById(userId);
-		const photos = await Photo.find({ user_id: userId });
+		const photos = await Photo.find({ user_id: userId }).populate("comments.user_id", "last_name");
 		if (!user) {
 			return response.status(400).json({ message: "invalid user id" });
 		}
