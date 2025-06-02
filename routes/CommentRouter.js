@@ -4,6 +4,51 @@ const User = require("../db/userModel");
 const router = express.Router();
 const authMiddleware = require("../middleware/authMiddleware");
 
+//post comment
+// private
+// POST http://localhost:8081/api/comments/commentsOfPhoto/:photo_id
+router.post("/commentsOfPhoto/:photo_id", authMiddleware, async (request, response) => {
+	const { comment } = request.body;
+	const photo_id = request.params.photo_id;
+	const userId = request.user.id; // Lấy user ID từ token đã xác thực
+
+	if (!photo_id) {
+		return response.status(400).json({ message: "Photo ID invalid." });
+	}
+
+	if (!comment || comment.trim() === "") {
+		return response.status(400).json({ message: "Bad Request." });
+	}
+
+	try {
+		// Kiểm tra xem ảnh có tồn tại không
+		const photo = await Photo.findById(photo_id);
+		if (!photo) {
+			return response.status(404).json({ message: "Photo not found." });
+		}
+
+		// Tạo comment mới
+		const newComment = {
+			user_id: userId,
+			comment: comment,
+			date_time: new Date()
+		};
+
+		// Thêm comment vào ảnh
+		photo.comments.push(newComment);
+		await photo.save();
+
+		response.status(201).json({
+			message: "Comment added successfully.",
+			comment: newComment
+		});
+
+	} catch (error) {
+		console.error("Error adding comment:", error);
+		response.status(500).json({ message: "Internal server error" });
+	}
+});
+
 // get comemnt by userid
 // private
 // GET http://localhost:8081/api/comments/:id
