@@ -3,6 +3,37 @@ const Photo = require("../db/photoModel");
 const User = require("../db/userModel");
 const router = express.Router();
 const authMiddleware = require("../middleware/authMiddleware");
+const upload = require("../middleware/cloudinary");
+
+//upload photo
+// private
+// POST http://localhost:8081/api/photo/new
+router.post("/new", authMiddleware, upload.single("photo"), async (req, res) => {
+	try {
+		console.log("File upload request received:", req.file);
+		console.log("User ID from request:", req.user.id);
+		if (!req.file) {
+			return res.status(400).json({ error: "No file uploaded." });
+		}
+
+		const newPhoto = new Photo({
+			file_name: req.file.path,
+			user_id: req.user.id,
+		});
+		console.log("New photo data:", newPhoto);
+
+		await newPhoto.save();
+		res.status(201).json({ message: "Photo uploaded", photo: newPhoto });
+	} catch (err) {
+		console.error("Upload error:", err);
+		res.status(500).json({
+			error: "Server error",
+			message: err.message,
+			stack: err.stack, // giúp debug rõ hơn
+		});
+	}
+
+});
 
 // get photos by id
 // private
